@@ -203,172 +203,22 @@ void mostrar_reserva(T_RESERVA hotel){
 
 //==================== OPCIONES 1 Y 2 - ORNELLA ====================
 
-//OPCION 1: pide los datos de una reserva, los valida y la agrega al final del archivo.
 void cargar_reserva(T_RESERVA hotel){
-	FILE *archivo;
-	char respuesta;
-
-	printf("\n--- CARGAR RESERVA NUEVA ---");
-	printf("\nApellido del cliente (una palabra, max %d letras): ", STRING - 1);
-	leer_apellido(hotel.cliente);
-
-	printf("Numero de habitacion: ");
-	hotel.habitacion = leer_entero();
-	while (hotel.habitacion <= 0 || habitacion_ocupada(hotel.habitacion)){
-		if (hotel.habitacion <= 0){
-			printf("El numero debe ser mayor a 0. Numero de habitacion: ");
-		} else {
-			printf("La habitacion %d ya esta ocupada. Elija otra: ", hotel.habitacion);
-		}
-		hotel.habitacion = leer_entero();
-	}
-
-	printf("Tiene tarjeta de cliente regular? (S/N): ");
-	respuesta = leer_letra();
-	while (respuesta != 'S' && respuesta != 'N'){
-		printf("Responda S o N: ");
-		respuesta = leer_letra();
-	}
-	hotel.tarjeta = (respuesta == 'S');
-
-	printf("Medio de pago (D=debito, E=efectivo, C=credito): ");
-	hotel.medio_de_pago = leer_letra();
-	while (hotel.medio_de_pago != 'D' && hotel.medio_de_pago != 'E' && hotel.medio_de_pago != 'C'){
-		printf("Ingrese D, E o C: ");
-		hotel.medio_de_pago = leer_letra();
-	}
-
-	printf("Monto: ");
-	hotel.monto = leer_float();
-	while (hotel.monto <= 0){
-		printf("El monto debe ser mayor a 0. Monto: ");
-		hotel.monto = leer_float();
-	}
-
-	archivo = fopen(ARCHIVO, "a");
-	if (archivo == NULL){
-		printf("\nERROR: no se pudo abrir el archivo %s.\n", ARCHIVO);
-		return;
-	}
-	fprintf(archivo, FORMATO_ESCRITURA, hotel.cliente, hotel.tarjeta ? 1 : 0,
-		hotel.habitacion, hotel.medio_de_pago, hotel.monto);
-	fclose(archivo);
-	printf("\nReserva guardada correctamente.\n");
+	printf("\nOpcion en desarrollo (Ornella).\n");
 }
 
-//OPCION 2: muestra todas las reservas del archivo, la cantidad y el total facturado.
 void listar_reservas(T_RESERVA hotel){
-	FILE *archivo;
-	int tarjeta, cantidad = 0;
-	double total = 0;   //double: mas precision para acumular muchos montos
-
-	archivo = fopen(ARCHIVO, "r");
-	if (archivo == NULL){
-		printf("\nTodavia no hay reservas cargadas.\n");
-		return;
-	}
-	printf("\n--- TODAS LAS RESERVAS ---");
-	mostrar_encabezado();
-	while (fscanf(archivo, FORMATO_LECTURA, hotel.cliente, &tarjeta,
-			&hotel.habitacion, &hotel.medio_de_pago, &hotel.monto) == CAMPOS){
-		hotel.tarjeta = (tarjeta != 0);
-		mostrar_reserva(hotel);
-		cantidad++;
-		total += hotel.monto;
-	}
-	fclose(archivo);
-	if (cantidad == 0){
-		printf("\n(no hay reservas en el archivo)\n");
-	} else {
-		printf("\n\nCantidad de reservas: %d", cantidad);
-		printf("\nTotal facturado: $%.2f\n", total);
-	}
+	printf("\nOpcion en desarrollo (Ornella).\n");
 }
 
 //==================== OPCIONES 3 Y 4 - DENISE ====================
 
-//PUNTO 3: muestra SOLO las reservas pagadas con debito o efectivo (condicion elegida)
-//y el descuento del 10% que les corresponde.
 void mostrarPagos(T_RESERVA hotel){
-	FILE *f;
-	int tarjetaAux;      //fscanf no lee bool, uso un int auxiliar
-	int cantidad = 0;    //cuantas reservas cumplen la condicion
-	float descuento;
-
-	f = fopen(ARCHIVO, "r");
-	if (f == NULL){
-		printf("\nTodavia no hay reservas cargadas.\n");
-		return;
-	}
-
-	printf("\n--- RESERVAS PAGADAS CON DEBITO O EFECTIVO (10%% DE DESCUENTO) ---");
-	printf("\n%-15s %-6s %-10s %12s %12s %12s", "CLIENTE", "HAB.", "PAGO", "MONTO", "DESC. 10%", "A PAGAR");
-	printf("\n----------------------------------------------------------------------");
-
-	while (fscanf(f, FORMATO_LECTURA, hotel.cliente, &tarjetaAux,
-			&hotel.habitacion, &hotel.medio_de_pago, &hotel.monto) == CAMPOS){
-
-		hotel.tarjeta = (tarjetaAux != 0);
-
-		//condicion: solo se muestran las pagadas con debito o efectivo
-		if (hotel.medio_de_pago == 'D' || hotel.medio_de_pago == 'E'){
-			descuento = hotel.monto * DESCUENTO;
-			printf("\n%-15s %-6d ", hotel.cliente, hotel.habitacion);
-			switch (hotel.medio_de_pago){
-				case 'D': printf("%-10s", "Debito");   break;
-				case 'E': printf("%-10s", "Efectivo"); break;
-			}
-			printf(" %12.2f %12.2f %12.2f", hotel.monto, descuento, hotel.monto - descuento);
-			cantidad++;
-		}
-	}
-
-	fclose(f);
-
-	if (cantidad == 0){
-		printf("\n(ninguna reserva fue pagada con debito o efectivo)\n");
-	} else {
-		printf("\n\nCantidad de reservas con descuento: %d\n", cantidad);
-	}
+	printf("\nOpcion en desarrollo (Denise).\n");
 }
 
-//PUNTO 4: busqueda secuencial de una habitacion en el archivo.
-//Le pregunta al usuario que habitacion buscar y dice si esta ocupada o libre.
 void buscarHabitacion(T_RESERVA hotel){
-	FILE *f;
-	int tarjetaAux;
-	int buscada;                 //habitacion que ingresa el usuario
-	bool encontrada = false;     //bandera de la busqueda
-
-	f = fopen(ARCHIVO, "r");
-	if (f == NULL){
-		printf("\nTodavia no hay reservas cargadas: todas las habitaciones estan libres.\n");
-		return;
-	}
-
-	printf("\nIngrese el numero de habitacion a buscar: ");
-	buscada = leer_entero();     //si escriben letras lo vuelve a pedir
-
-	while (!encontrada && fscanf(f, FORMATO_LECTURA, hotel.cliente, &tarjetaAux,
-			&hotel.habitacion, &hotel.medio_de_pago, &hotel.monto) == CAMPOS){
-
-		hotel.tarjeta = (tarjetaAux != 0);
-
-		if (hotel.habitacion == buscada){
-			encontrada = true;
-		}
-	}
-
-	fclose(f);
-
-	if (encontrada){
-		printf("\nLa habitacion %d esta OCUPADA:", buscada);
-		mostrar_encabezado();
-		mostrar_reserva(hotel);
-		printf("\n");
-	} else {
-		printf("\nLa habitacion %d esta LIBRE (no figura en el archivo).\n", buscada);
-	}
+	printf("\nOpcion en desarrollo (Denise).\n");
 }
 
 //==================== OPCIONES 5 Y 6 - SANTIAGO ====================
