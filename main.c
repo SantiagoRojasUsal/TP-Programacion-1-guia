@@ -203,86 +203,12 @@ void mostrar_reserva(T_RESERVA hotel){
 
 //==================== OPCIONES 1 Y 2 - ORNELLA ====================
 
-//OPCION 1: pide los datos de una reserva, los valida y la agrega al final del archivo.
 void cargar_reserva(T_RESERVA hotel){
-	FILE *archivo;
-	char respuesta;
-
-	printf("\n--- CARGAR RESERVA NUEVA ---");
-	printf("\nApellido del cliente (una palabra, max %d letras): ", STRING - 1);
-	leer_apellido(hotel.cliente);
-
-	printf("Numero de habitacion: ");
-	hotel.habitacion = leer_entero();
-	while (hotel.habitacion <= 0 || habitacion_ocupada(hotel.habitacion)){
-		if (hotel.habitacion <= 0){
-			printf("El numero debe ser mayor a 0. Numero de habitacion: ");
-		} else {
-			printf("La habitacion %d ya esta ocupada. Elija otra: ", hotel.habitacion);
-		}
-		hotel.habitacion = leer_entero();
-	}
-
-	printf("Tiene tarjeta de cliente regular? (S/N): ");
-	respuesta = leer_letra();
-	while (respuesta != 'S' && respuesta != 'N'){
-		printf("Responda S o N: ");
-		respuesta = leer_letra();
-	}
-	hotel.tarjeta = (respuesta == 'S');
-
-	printf("Medio de pago (D=debito, E=efectivo, C=credito): ");
-	hotel.medio_de_pago = leer_letra();
-	while (hotel.medio_de_pago != 'D' && hotel.medio_de_pago != 'E' && hotel.medio_de_pago != 'C'){
-		printf("Ingrese D, E o C: ");
-		hotel.medio_de_pago = leer_letra();
-	}
-
-	printf("Monto: ");
-	hotel.monto = leer_float();
-	while (hotel.monto <= 0){
-		printf("El monto debe ser mayor a 0. Monto: ");
-		hotel.monto = leer_float();
-	}
-
-	archivo = fopen(ARCHIVO, "a");
-	if (archivo == NULL){
-		printf("\nERROR: no se pudo abrir el archivo %s.\n", ARCHIVO);
-		return;
-	}
-	fprintf(archivo, FORMATO_ESCRITURA, hotel.cliente, hotel.tarjeta ? 1 : 0,
-		hotel.habitacion, hotel.medio_de_pago, hotel.monto);
-	fclose(archivo);
-	printf("\nReserva guardada correctamente.\n");
+	printf("\nOpcion en desarrollo (Ornella).\n");
 }
 
-//OPCION 2: muestra todas las reservas del archivo, la cantidad y el total facturado.
 void listar_reservas(T_RESERVA hotel){
-	FILE *archivo;
-	int tarjeta, cantidad = 0;
-	double total = 0;   //double: mas precision para acumular muchos montos
-
-	archivo = fopen(ARCHIVO, "r");
-	if (archivo == NULL){
-		printf("\nTodavia no hay reservas cargadas.\n");
-		return;
-	}
-	printf("\n--- TODAS LAS RESERVAS ---");
-	mostrar_encabezado();
-	while (fscanf(archivo, FORMATO_LECTURA, hotel.cliente, &tarjeta,
-			&hotel.habitacion, &hotel.medio_de_pago, &hotel.monto) == CAMPOS){
-		hotel.tarjeta = (tarjeta != 0);
-		mostrar_reserva(hotel);
-		cantidad++;
-		total += hotel.monto;
-	}
-	fclose(archivo);
-	if (cantidad == 0){
-		printf("\n(no hay reservas en el archivo)\n");
-	} else {
-		printf("\n\nCantidad de reservas: %d", cantidad);
-		printf("\nTotal facturado: $%.2f\n", total);
-	}
+	printf("\nOpcion en desarrollo (Ornella).\n");
 }
 
 //==================== OPCIONES 3 Y 4 - DENISE ====================
@@ -373,49 +299,10 @@ void buscarHabitacion(T_RESERVA hotel){
 
 //==================== OPCIONES 5 Y 6 - SANTIAGO ====================
 
-//OPCION 5: divide el archivo de reservas en dos archivos de texto nuevos
-//segun el campo booleano tarjeta (tarjeta de cliente regular).
-//Lee una reserva por vez, no guarda todo el archivo en memoria.
 void dividir_por_tarjeta(T_RESERVA hotel){
-	FILE *origen, *con_tarjeta, *sin_tarjeta;
-	int tarjeta, cant_con = 0, cant_sin = 0;
-
-	origen = fopen(ARCHIVO, "r");
-	if (origen == NULL){
-		printf("\nTodavia no hay reservas cargadas.\n");
-		return;
-	}
-	con_tarjeta = fopen(ARCHIVO_CON_TARJETA, "w");
-	sin_tarjeta = fopen(ARCHIVO_SIN_TARJETA, "w");
-	if (con_tarjeta == NULL || sin_tarjeta == NULL){
-		printf("\nERROR: no se pudieron crear los archivos nuevos.\n");
-		if (con_tarjeta != NULL) fclose(con_tarjeta);
-		if (sin_tarjeta != NULL) fclose(sin_tarjeta);
-		fclose(origen);
-		return;
-	}
-	while (fscanf(origen, FORMATO_LECTURA, hotel.cliente, &tarjeta,
-			&hotel.habitacion, &hotel.medio_de_pago, &hotel.monto) == CAMPOS){
-		hotel.tarjeta = (tarjeta != 0);
-		if (hotel.tarjeta){
-			fprintf(con_tarjeta, FORMATO_ESCRITURA, hotel.cliente, 1,
-				hotel.habitacion, hotel.medio_de_pago, hotel.monto);
-			cant_con++;
-		} else {
-			fprintf(sin_tarjeta, FORMATO_ESCRITURA, hotel.cliente, 0,
-				hotel.habitacion, hotel.medio_de_pago, hotel.monto);
-			cant_sin++;
-		}
-	}
-	fclose(origen);
-	fclose(con_tarjeta);
-	fclose(sin_tarjeta);
-	printf("\n--- ARCHIVO DIVIDIDO ---");
-	printf("\n%d reserva(s) CON tarjeta de cliente regular -> %s", cant_con, ARCHIVO_CON_TARJETA);
-	printf("\n%d reserva(s) SIN tarjeta de cliente regular -> %s\n", cant_sin, ARCHIVO_SIN_TARJETA);
+	printf("\nOpcion en desarrollo (Santiago).\n");
 }
 
-//OPCION 6: mensaje de salida (el do-while del menu termina con la opcion 6).
 void salir_del_sistema(void){
-	printf("\nFuera del sistema. Hasta luego!\n");
+	printf("\nOpcion en desarrollo (Santiago).\n");
 }
