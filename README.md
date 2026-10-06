@@ -68,7 +68,7 @@ PEREZ    1        101         D              15000.00
 ```
 
 - `tarjeta` se guarda como `1` (sí) o `0` (no), porque `fscanf` no puede leer un `bool` directamente.
-- El apellido se guarda en mayúsculas, así la búsqueda funciona aunque se escriba `perez`, `Perez` o `PEREZ`.
+- El apellido se guarda en mayúsculas, para que todos los registros queden escritos igual.
 
 ---
 
@@ -80,7 +80,7 @@ Al ejecutar el programa aparece el menú. Se elige una opción escribiendo el n�
 1) cargar una reserva nueva
 2) mostrar lista de todas las reservas
 3) mostrar solo los que pagaron con debito o efectivo (10% de descuento)
-4) buscar una reserva (habitacion ocupada o por cliente)
+4) buscar si una habitacion esta ocupada
 5) dividir en dos archivos segun tarjeta de cliente regular
 6) salir del sistema
 opcion=
@@ -129,39 +129,41 @@ Total facturado: $151251.24
 ```
 
 ### 3) Reservas pagadas con débito o efectivo (condición)
-Muestra **solo** las reservas cuyo medio de pago es débito (`D`) o efectivo (`E`). Para cada una agrega el monto final con un **10 % de descuento**. Las pagadas con crédito no aparecen.
+Muestra **solo** las reservas cuyo medio de pago es débito (`D`) o efectivo (`E`). Para cada una muestra el monto, el **descuento del 10 %** y el total a pagar. Las pagadas con crédito no aparecen.
 
 ```
 --- RESERVAS PAGADAS CON DEBITO O EFECTIVO (10% DE DESCUENTO) ---
-CLIENTE         HABITACION TARJETA  PAGO              MONTO  CON DESCUENTO
-------------------------------------------------------------------------
-PEREZ           101        SI       Debito         15000.00       13500.00
-GOMEZ           102        NO       Efectivo       12000.50       10800.45
-...
+CLIENTE         HAB.   PAGO              MONTO    DESC. 10%      A PAGAR
+----------------------------------------------------------------------
+PEREZ           101    Debito         15000.00      1500.00     13500.00
+GOMEZ           102    Efectivo       12000.50      1200.05     10800.45
+FERNANDEZ       204    Debito         18500.75      1850.07     16650.68
+MARTINEZ        305    Efectivo       22000.00      2200.00     19800.00
+RODRIGUEZ       402    Debito         16250.00      1625.00     14625.00
 
 Cantidad de reservas con descuento: 5
 ```
 
-### 4) Buscar una reserva
-Primero **pregunta por qué dato buscar** y después pide ese dato:
+### 4) Buscar si una habitación está ocupada
+Es la **búsqueda por un campo**: le pregunta al usuario **qué número de habitación buscar** y recorre el archivo hasta encontrarla.
 
-- **Por número de habitación:** muestra la reserva y dice si la habitación está **OCUPADA** o **LIBRE**.
-- **Por apellido del cliente:** muestra todas las reservas a nombre de ese cliente, sin importar mayúsculas o minúsculas.
+- Si la encuentra, dice que está **OCUPADA** y muestra los datos de la reserva.
+- Si no está en el archivo, dice que está **LIBRE**.
 
 ```
---- BUSCAR RESERVA ---
-1) buscar por numero de habitacion (ver si esta ocupada)
-2) buscar por apellido del cliente
-opcion= 2
-Apellido del cliente a buscar: perez
+Ingrese el numero de habitacion a buscar: 203
 
+La habitacion 203 esta OCUPADA:
 CLIENTE         HABITACION TARJETA  PAGO              MONTO
 ---------------------------------------------------------
-PEREZ           101        SI       Debito         15000.00
-PEREZ           401        NO       Credito        27500.00
-
-Se encontraron 2 reserva(s) a nombre de PEREZ.
+LOPEZ           203        SI       Credito        30000.00
 ```
+```
+Ingrese el numero de habitacion a buscar: 999
+
+La habitacion 999 esta LIBRE (no figura en el archivo).
+```
+Como no se pueden cargar dos reservas en la misma habitación (la opción 1 lo controla), la búsqueda termina apenas la encuentra.
 
 ### 5) Dividir el archivo según la tarjeta de cliente regular
 Lee `reservas.txt` y reparte cada reserva en **dos archivos de texto nuevos** según el campo booleano `tarjeta`:
@@ -189,8 +191,8 @@ main()                      declara la reserva "hotel" y llama al menu
 └── mostrar(hotel)          menu: do-while + switch con las 6 opciones
     ├── 1  cargar_reserva(hotel)          ┐ Ornella
     ├── 2  listar_reservas(hotel)         ┘
-    ├── 3  listar_debito_efectivo(hotel)  ┐ Denise
-    ├── 4  buscar_reserva(hotel)          ┘
+    ├── 3  mostrarPagos(hotel)            ┐ Denise
+    ├── 4  buscarHabitacion(hotel)        ┘
     ├── 5  dividir_por_tarjeta(hotel)     ┐ Santiago
     └── 6  salir_del_sistema()            ┘
 

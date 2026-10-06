@@ -24,20 +24,23 @@ La nota individual depende del oral. Cada uno tiene que poder **explicar su part
 
 ## Denise – opciones 3 y 4
 
-**`listar_debito_efectivo(T_RESERVA hotel)`** (la condición elegida)
-- Muestra solo las reservas con `medio_de_pago == 'D' || medio_de_pago == 'E'`.
-- Calcula el monto con descuento: `hotel.monto * (1 - DESCUENTO)`.
+**`mostrarPagos(T_RESERVA hotel)`** (la condición elegida)
+- Muestra solo las reservas con `medio_de_pago == 'D' || medio_de_pago == 'E'` (ese `if` es la condición).
+- Calcula `descuento = hotel.monto * DESCUENTO` y muestra monto, descuento y `monto - descuento`.
+- Cuenta cuántas cumplen; si ninguna, lo avisa.
 
-**`buscar_reserva(T_RESERVA hotel)`**
-- Pregunta el criterio (1 = habitación, 2 = apellido) y pide el dato.
-- Recorre el archivo y muestra las coincidencias. Si busca por habitación, dice si está OCUPADA o LIBRE.
+**`buscarHabitacion(T_RESERVA hotel)`**
+- Pregunta qué habitación buscar con `leer_entero()` (si escriben letras, la vuelve a pedir).
+- Búsqueda secuencial con bandera: `while (!encontrada && fscanf(...) == CAMPOS)`; al encontrarla pone `encontrada = true` y el `while` corta.
+- Si la encontró, `hotel` todavía tiene los datos de esa reserva y se muestran con `mostrar_reserva`.
 
 | Pregunta | Respuesta corta |
 |---|---|
-| ¿Por qué `strcmp` y no `==` para comparar apellidos? | Un string es un arreglo de `char`; `==` no compara el contenido. `strcmp` devuelve 0 si los textos son iguales. |
-| ¿Por qué se pasa el apellido a mayúsculas? | Para que `perez`, `Perez` y `PEREZ` se encuentren igual; en el archivo se guardan en mayúsculas. |
+| ¿Para qué sirve la bandera `encontrada`? | Para dejar de leer el archivo apenas aparece la habitación; no tiene sentido seguir porque no puede haber dos reservas en la misma. |
+| ¿Por qué después del `while` `hotel` tiene los datos de la habitación encontrada? | Porque el `while` corta justo después de leerla, así que es la última reserva que quedó guardada en `hotel`. |
+| ¿Cuál es la condición de la opción 3? | `medio_de_pago == 'D' \|\| medio_de_pago == 'E'`: solo se muestran las que cumplen; las de crédito se saltean. |
 | ¿Por qué `DESCUENTO` es un `#define`? | Si el descuento cambia, se modifica una sola línea. |
-| ¿Por qué se recorre todo el archivo al buscar por apellido? | Un cliente puede tener varias reservas y hay que mostrarlas todas. |
+| ¿Qué pasaba antes si se escribía una letra como habitación? | `scanf("%d")` fallaba, la letra quedaba en el buffer y el programa entraba en un loop infinito; `leer_entero` limpia el buffer y la vuelve a pedir. |
 
 ## Santiago – opciones 5 y 6
 

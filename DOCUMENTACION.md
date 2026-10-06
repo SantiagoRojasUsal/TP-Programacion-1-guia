@@ -36,8 +36,8 @@ Programa en C estándar que resuelve un **menú de opciones** usando una **estru
 |---|---|---|---|
 | 1 | `cargar_reserva(T_RESERVA hotel)` | Ornella | Pide y valida cada dato (apellido, habitación libre y mayor a 0, S/N, D/E/C, monto mayor a 0). Abre el archivo en modo `"a"` y agrega la reserva al final. |
 | 2 | `listar_reservas(T_RESERVA hotel)` | Ornella | Abre en modo `"r"`, recorre todo el archivo mostrando cada reserva y al final informa la cantidad y el total facturado. |
-| 3 | `listar_debito_efectivo(T_RESERVA hotel)` | Denise | **Listado con condición:** muestra solo las reservas con `medio_de_pago == 'D' \|\| medio_de_pago == 'E'` y el monto con descuento: `monto * (1 - DESCUENTO)`. |
-| 4 | `buscar_reserva(T_RESERVA hotel)` | Denise | **Búsqueda específica:** pregunta si buscar por habitación o por apellido, pide el dato y muestra las coincidencias. Los números se comparan con `==` y los apellidos con `strcmp`. Si se busca por habitación, informa si está OCUPADA o LIBRE. |
+| 3 | `mostrarPagos(T_RESERVA hotel)` | Denise | **Listado con condición:** muestra solo las reservas con `medio_de_pago == 'D' \|\| medio_de_pago == 'E'`. Para cada una calcula `descuento = monto * DESCUENTO` y muestra el monto, el descuento y el total a pagar (`monto - descuento`). Al final informa la cantidad, o avisa si ninguna cumple la condición. |
+| 4 | `buscarHabitacion(T_RESERVA hotel)` | Denise | **Búsqueda específica por el campo habitación:** pregunta al usuario qué habitación buscar y hace una búsqueda secuencial con una bandera (`encontrada`) que corta el `while` apenas la encuentra. Si la encuentra, informa que está OCUPADA y muestra la reserva; si no, que está LIBRE. |
 | 5 | `dividir_por_tarjeta(T_RESERVA hotel)` | Santiago | Abre el original en `"r"` y los dos archivos nuevos en `"w"`. Lee de a una reserva y la escribe en uno u otro archivo según `hotel.tarjeta`. Cierra los tres archivos e informa cuántas reservas fueron a cada uno. |
 | 6 | `salir_del_sistema()` | Santiago | Muestra el mensaje de salida; el `do-while` del menú termina. |
 
@@ -59,7 +59,7 @@ Programa en C estándar que resuelve un **menú de opciones** usando una **estru
 - **Constantes con `#define`:** nombres de archivos, descuento, tamaño del string y formato del archivo. Para cambiar cualquiera de estos datos alcanza con modificar una sola línea.
 - **Control de errores de archivos:** después de cada `fopen` se verifica que no devuelva `NULL`. Si `reservas.txt` no existe, se informa que todavía no hay reservas. Todo archivo abierto se cierra con `fclose`. En la opción 5, si no se puede crear alguno de los archivos nuevos, se cierran los que sí se abrieron.
 - **Validación de datos de entrada:** ningún dato inválido llega al archivo, y escribir letras donde va un número no traba el programa.
-- **Mayúsculas:** los apellidos se guardan y se buscan en mayúsculas, así `perez` encuentra a `PEREZ`.
+- **Mayúsculas:** los apellidos y las letras de S/N y D/E/C se guardan en mayúsculas, así no importa cómo los escriba el usuario.
 - **Limitación conocida:** el apellido es una sola palabra (sin espacios), porque el archivo separa los campos con espacios.
 
 ## 6. Datos de prueba (`reservas.txt`)
@@ -73,17 +73,17 @@ SOSA 0 306 C 9999.99
 PEREZ 0 401 C 27500.00
 RODRIGUEZ 1 402 D 16250.00
 ```
-Incluye los tres medios de pago, clientes con y sin tarjeta, y un cliente (PEREZ) con dos reservas para probar la búsqueda por apellido.
+Incluye los tres medios de pago, clientes con y sin tarjeta, y un cliente (PEREZ) con dos reservas en distintas habitaciones.
 
 ## 7. Pruebas realizadas
 | # | Prueba | Resultado obtenido |
 |---|---|---|
 | 1 | Opción 2 | 8 reservas, total facturado $151251.24 |
-| 2 | Opción 3 | 5 reservas (PEREZ 101, GOMEZ, FERNANDEZ, MARTINEZ, RODRIGUEZ), cada una con el 10 % de descuento |
+| 2 | Opción 3 | 5 reservas (PEREZ 101, GOMEZ, FERNANDEZ, MARTINEZ, RODRIGUEZ) con monto, descuento y total a pagar; no aparecen las de crédito |
 | 3 | Opción 4 → habitación 203 | Muestra a LOPEZ, la habitación está OCUPADA |
 | 4 | Opción 4 → habitación 999 | La habitación está LIBRE |
-| 5 | Opción 4 → apellido `perez` | 2 reservas (habitaciones 101 y 401) |
-| 6 | Opción 4 → apellido inexistente | "No hay reservas a nombre de ..." |
+| 5 | Opción 4 → escribir `abc` como habitación | Pide el número de nuevo (no se cuelga) |
+| 6 | Opción 3 con un archivo que solo tiene reservas con crédito | "ninguna reserva fue pagada con debito o efectivo" |
 | 7 | Opción 1 con habitación 101 | La vuelve a pedir porque está ocupada |
 | 8 | Opción 1 con habitación 0, tarjeta `x`, medio `q`, monto `-5` y `abc` | Cada dato se vuelve a pedir hasta que es válido |
 | 9 | Opción 1 con datos válidos y después opción 4 | La reserva nueva queda guardada y se encuentra |

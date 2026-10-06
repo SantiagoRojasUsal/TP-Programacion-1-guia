@@ -52,8 +52,8 @@ void mostrar_reserva(T_RESERVA hotel);
 void cargar_reserva(T_RESERVA hotel);
 void listar_reservas(T_RESERVA hotel);
 //opciones 3 y 4 (Denise)
-void listar_debito_efectivo(T_RESERVA hotel);
-void buscar_reserva(T_RESERVA hotel);
+void mostrarPagos(T_RESERVA hotel);
+void buscarHabitacion(T_RESERVA hotel);
 //opciones 5 y 6 (Santiago)
 void dividir_por_tarjeta(T_RESERVA hotel);
 void salir_del_sistema(void);
@@ -78,7 +78,7 @@ void mostrar(T_RESERVA hotel){
 		printf("1) cargar una reserva nueva");
 		printf("\n2) mostrar lista de todas las reservas");
 		printf("\n3) mostrar solo los que pagaron con debito o efectivo (10%% de descuento)");
-		printf("\n4) buscar una reserva (habitacion ocupada o por cliente)");
+		printf("\n4) buscar si una habitacion esta ocupada");
 		printf("\n5) dividir en dos archivos segun tarjeta de cliente regular");
 		printf("\n6) salir del sistema");
 		printf("\nopcion= ");
@@ -86,8 +86,8 @@ void mostrar(T_RESERVA hotel){
 		switch (opcion){
 			case 1: cargar_reserva(hotel); break;
 			case 2: listar_reservas(hotel); break;
-			case 3: listar_debito_efectivo(hotel); break;
-			case 4: buscar_reserva(hotel); break;
+			case 3: mostrarPagos(hotel); break;
+			case 4: buscarHabitacion(hotel); break;
 			case 5: dividir_por_tarjeta(hotel); break;
 			case 6: salir_del_sistema(); break;
 			default: printf("\nERROR... opcion invalida, elija un numero del 1 al 6.\n"); break;
@@ -213,11 +213,11 @@ void listar_reservas(T_RESERVA hotel){
 
 //==================== OPCIONES 3 Y 4 - DENISE ====================
 
-void listar_debito_efectivo(T_RESERVA hotel){
+void mostrarPagos(T_RESERVA hotel){
 	printf("\nOpcion en desarrollo (Denise).\n");
 }
 
-void buscar_reserva(T_RESERVA hotel){
+void buscarHabitacion(T_RESERVA hotel){
 	printf("\nOpcion en desarrollo (Denise).\n");
 }
 
