@@ -10,6 +10,7 @@
 
 //BIBLIOTECAS
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 #include <stdbool.h>
@@ -37,28 +38,30 @@ typedef struct{
 
 //DECLARACIONES DE FUNCIONES
 //menu y funciones generales (de todo el grupo)
-void menu(void);
+void mostrar(T_RESERVA hotel);
 int leer_entero(void);
 float leer_float(void);
 char leer_letra(void);
+void leer_apellido(char texto[]);
 void limpiar_buffer(void);
-void pasar_a_mayusculas(char texto[]);
+void fin_de_entrada(void);
 bool habitacion_ocupada(int numero);
 void mostrar_encabezado(void);
 void mostrar_reserva(T_RESERVA hotel);
 //opciones 1 y 2 (Ornella)
-void cargar_reserva(void);
-void listar_reservas(void);
+void cargar_reserva(T_RESERVA hotel);
+void listar_reservas(T_RESERVA hotel);
 //opciones 3 y 4 (Denise)
-void listar_debito_efectivo(void);
-void buscar_reserva(void);
+void listar_debito_efectivo(T_RESERVA hotel);
+void buscar_reserva(T_RESERVA hotel);
 //opciones 5 y 6 (Santiago)
-void dividir_por_tarjeta(void);
+void dividir_por_tarjeta(T_RESERVA hotel);
 void salir_del_sistema(void);
 
 //INT MAIN
 int main(){
-	menu();
+	T_RESERVA hotel = {"", false, 0, ' ', 0};
+	mostrar(hotel);
 	return 0;
 }
 
@@ -66,38 +69,39 @@ int main(){
 
 //==================== MENU Y FUNCIONES GENERALES ====================
 
-void menu(void){
+//Menu principal: se repite hasta elegir la opcion 6.
+//Recibe la reserva "hotel" y se la pasa a cada opcion para usarla como variable de trabajo.
+void mostrar(T_RESERVA hotel){
 	int opcion;
 	do {
-		printf("\n========== HOTEL - MENU ==========");
-		printf("\n1) Cargar una reserva nueva");
-		printf("\n2) Mostrar todas las reservas");
-		printf("\n3) Mostrar reservas pagadas con debito o efectivo (10%% de descuento)");
-		printf("\n4) Buscar una reserva (por habitacion o por cliente)");
-		printf("\n5) Dividir el archivo segun tarjeta de cliente regular");
-		printf("\n6) Salir del sistema");
-		printf("\nOpcion: ");
+		puts("\n================ MENU ================");
+		printf("1) cargar una reserva nueva");
+		printf("\n2) mostrar lista de todas las reservas");
+		printf("\n3) mostrar solo los que pagaron con debito o efectivo (10%% de descuento)");
+		printf("\n4) buscar una reserva (habitacion ocupada o por cliente)");
+		printf("\n5) dividir en dos archivos segun tarjeta de cliente regular");
+		printf("\n6) salir del sistema");
+		printf("\nopcion= ");
 		opcion = leer_entero();
 		switch (opcion){
-			case 1: cargar_reserva(); break;
-			case 2: listar_reservas(); break;
-			case 3: listar_debito_efectivo(); break;
-			case 4: buscar_reserva(); break;
-			case 5: dividir_por_tarjeta(); break;
+			case 1: cargar_reserva(hotel); break;
+			case 2: listar_reservas(hotel); break;
+			case 3: listar_debito_efectivo(hotel); break;
+			case 4: buscar_reserva(hotel); break;
+			case 5: dividir_por_tarjeta(hotel); break;
 			case 6: salir_del_sistema(); break;
-			default: printf("\nERROR: opcion invalida, elija un numero del 1 al 6.\n"); break;
+			default: printf("\nERROR... opcion invalida, elija un numero del 1 al 6.\n"); break;
 		}
 	} while (opcion != 6);
 }
 
 //Lee un numero entero. Si el usuario escribe letras, lo vuelve a pedir.
-//Si se termina la entrada (Ctrl+Z / Ctrl+D) devuelve 6 para salir del sistema.
 int leer_entero(void){
 	int numero, leidos;
 	leidos = scanf("%d", &numero);
 	while (leidos != 1){
 		if (leidos == EOF){
-			return 6;
+			fin_de_entrada();
 		}
 		limpiar_buffer();
 		printf("Debe ingresar un numero entero: ");
@@ -112,13 +116,13 @@ float leer_float(void){
 	float numero;
 	int leidos;
 	leidos = scanf("%f", &numero);
-	while (leidos != 1 && leidos != EOF){
+	while (leidos != 1){
+		if (leidos == EOF){
+			fin_de_entrada();
+		}
 		limpiar_buffer();
 		printf("Debe ingresar un numero: ");
 		leidos = scanf("%f", &numero);
-	}
-	if (leidos == EOF){
-		return 0;
 	}
 	limpiar_buffer();
 	return numero;
@@ -126,11 +130,25 @@ float leer_float(void){
 
 //Lee una sola letra (salteando espacios) y la devuelve en mayuscula.
 char leer_letra(void){
-	char letra = ' ';
-	if (scanf(" %c", &letra) == 1){
-		limpiar_buffer();
+	char letra;
+	if (scanf(" %c", &letra) != 1){
+		fin_de_entrada();
 	}
+	limpiar_buffer();
 	return toupper((unsigned char)letra);
+}
+
+//Lee un apellido (una palabra, maximo STRING-1 letras) y lo pasa a mayusculas,
+//asi las busquedas no dependen de como se escribio.
+void leer_apellido(char texto[]){
+	int i;
+	if (scanf("%14s", texto) != 1){
+		fin_de_entrada();
+	}
+	limpiar_buffer();
+	for (i = 0; texto[i] != '\0'; i++){
+		texto[i] = toupper((unsigned char)texto[i]);
+	}
 }
 
 //Descarta lo que haya quedado escrito en la linea.
@@ -139,12 +157,11 @@ void limpiar_buffer(void){
 	while ((c = getchar()) != '\n' && c != EOF);
 }
 
-//Pasa un texto a mayusculas para poder compararlo sin importar como se escribio.
-void pasar_a_mayusculas(char texto[]){
-	int i;
-	for (i = 0; texto[i] != '\0'; i++){
-		texto[i] = toupper((unsigned char)texto[i]);
-	}
+//Si se termina la entrada del teclado (Ctrl+Z en Windows, Ctrl+D en Linux)
+//el programa termina para no quedar en un loop infinito.
+void fin_de_entrada(void){
+	printf("\nFin de la entrada. Fuera del sistema.\n");
+	exit(0);
 }
 
 //Devuelve true si la habitacion ya tiene una reserva en el archivo.
@@ -187,16 +204,13 @@ void mostrar_reserva(T_RESERVA hotel){
 //==================== OPCIONES 1 Y 2 - ORNELLA ====================
 
 //OPCION 1: pide los datos de una reserva, los valida y la agrega al final del archivo.
-void cargar_reserva(void){
+void cargar_reserva(T_RESERVA hotel){
 	FILE *archivo;
-	T_RESERVA hotel;
 	char respuesta;
 
 	printf("\n--- CARGAR RESERVA NUEVA ---");
 	printf("\nApellido del cliente (una palabra, max %d letras): ", STRING - 1);
-	scanf("%14s", hotel.cliente);
-	limpiar_buffer();
-	pasar_a_mayusculas(hotel.cliente);
+	leer_apellido(hotel.cliente);
 
 	printf("Numero de habitacion: ");
 	hotel.habitacion = leer_entero();
@@ -243,9 +257,8 @@ void cargar_reserva(void){
 }
 
 //OPCION 2: muestra todas las reservas del archivo, la cantidad y el total facturado.
-void listar_reservas(void){
+void listar_reservas(T_RESERVA hotel){
 	FILE *archivo;
-	T_RESERVA hotel;
 	int tarjeta, cantidad = 0;
 	float total = 0;
 
@@ -276,9 +289,8 @@ void listar_reservas(void){
 
 //OPCION 3: muestra solo las reservas pagadas con debito o efectivo,
 //con el monto final aplicando un 10% de descuento.
-void listar_debito_efectivo(void){
+void listar_debito_efectivo(T_RESERVA hotel){
 	FILE *archivo;
-	T_RESERVA hotel;
 	int tarjeta, cantidad = 0;
 
 	archivo = fopen(ARCHIVO, "r");
@@ -308,16 +320,15 @@ void listar_debito_efectivo(void){
 
 //OPCION 4: pregunta al usuario por que dato buscar (habitacion o cliente)
 //y muestra las reservas que coinciden.
-void buscar_reserva(void){
+void buscar_reserva(T_RESERVA hotel){
 	FILE *archivo;
-	T_RESERVA hotel;
 	int tarjeta, criterio, habitacion_buscada = 0, encontradas = 0;
 	char cliente_buscado[STRING] = "";
 
 	printf("\n--- BUSCAR RESERVA ---");
-	printf("\n1) Buscar por numero de habitacion (ver si esta ocupada)");
-	printf("\n2) Buscar por apellido del cliente");
-	printf("\nOpcion: ");
+	printf("\n1) buscar por numero de habitacion (ver si esta ocupada)");
+	printf("\n2) buscar por apellido del cliente");
+	printf("\nopcion= ");
 	criterio = leer_entero();
 	while (criterio != 1 && criterio != 2){
 		printf("Elija 1 o 2: ");
@@ -328,9 +339,7 @@ void buscar_reserva(void){
 		habitacion_buscada = leer_entero();
 	} else {
 		printf("Apellido del cliente a buscar: ");
-		scanf("%14s", cliente_buscado);
-		limpiar_buffer();
-		pasar_a_mayusculas(cliente_buscado);
+		leer_apellido(cliente_buscado);
 	}
 
 	archivo = fopen(ARCHIVO, "r");
@@ -372,9 +381,8 @@ void buscar_reserva(void){
 //OPCION 5: divide el archivo de reservas en dos archivos de texto nuevos
 //segun el campo booleano tarjeta (tarjeta de cliente regular).
 //Lee una reserva por vez, no guarda todo el archivo en memoria.
-void dividir_por_tarjeta(void){
+void dividir_por_tarjeta(T_RESERVA hotel){
 	FILE *origen, *con_tarjeta, *sin_tarjeta;
-	T_RESERVA hotel;
 	int tarjeta, cant_con = 0, cant_sin = 0;
 
 	origen = fopen(ARCHIVO, "r");
