@@ -13,6 +13,7 @@ La nota individual depende del oral. Cada uno tiene que poder **explicar su part
 
 **`listar_reservas(T_RESERVA hotel)`**
 - Abre en `"r"`, recorre con `while (fscanf(...) == CAMPOS)`, muestra cada reserva y acumula `cantidad` y `total`.
+- `total` es `double` y no `float`: al sumar muchos montos, `float` pierde centavos por falta de precisión.
 
 | Pregunta | Respuesta corta |
 |---|---|

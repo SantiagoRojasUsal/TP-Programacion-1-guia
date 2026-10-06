@@ -78,7 +78,7 @@ Incluye los tres medios de pago, clientes con y sin tarjeta, y un cliente (PEREZ
 ## 7. Pruebas realizadas
 | # | Prueba | Resultado obtenido |
 |---|---|---|
-| 1 | Opción 2 | 8 reservas, total facturado $151251.25 |
+| 1 | Opción 2 | 8 reservas, total facturado $151251.24 |
 | 2 | Opción 3 | 5 reservas (PEREZ 101, GOMEZ, FERNANDEZ, MARTINEZ, RODRIGUEZ), cada una con el 10 % de descuento |
 | 3 | Opción 4 → habitación 203 | Muestra a LOPEZ, la habitación está OCUPADA |
 | 4 | Opción 4 → habitación 999 | La habitación está LIBRE |

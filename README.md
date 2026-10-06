@@ -125,7 +125,7 @@ LOPEZ           203        SI       Credito        30000.00
 ...
 
 Cantidad de reservas: 8
-Total facturado: $151251.25
+Total facturado: $151251.24
 ```
 
 ### 3) Reservas pagadas con débito o efectivo (condición)

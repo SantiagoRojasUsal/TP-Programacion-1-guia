@@ -55,7 +55,7 @@ void cargar_reserva(T_RESERVA hotel){
 void listar_reservas(T_RESERVA hotel){
 	FILE *archivo;
 	int tarjeta, cantidad = 0;
-	float total = 0;
+	double total = 0;   //double: mas precision para acumular muchos montos
 
 	archivo = fopen(ARCHIVO, "r");
 	if (archivo == NULL){
